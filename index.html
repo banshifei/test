@@ -2,10 +2,36 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Моя страница</title>
+    <title>Запуск TMA</title>
+    <!-- 1. Подключаем официальный скрипт Telegram -->
+    <script src="https://telegram.org"></script>
 </head>
 <body>
-    <h1>Выберите тестовый стенд:</h1>
-    <a href="https://dev-zhiraff.wildberries.ru/" target="_blank">https://dev-zhiraff.wildberries.ru/</a>
+    <h1>Это страница-заглушка. Включите корпоративный VPN и откройте TMA</h1>
+    
+    <!-- 2. Ссылку делаем кнопкой с вызовом функции -->
+    <p>
+        <button onclick="openDevTma()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+            Открыть TMA Dev
+        </button>
+    </p>
+
+    <script>
+        // Инициализируем Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.ready(); // Сообщаем Telegram, что страница готова
+
+        function openDevTma() {
+            const tmaLink = "https://dev-zhiraff.wildberries.ru/";
+
+            if (tg.initData) {
+                // Если страница открыта внутри Telegram, используем внутренний метод открытия
+                tg.openTelegramLink(tmaLink);
+            } else {
+                // Если открыли просто в обычном браузере, сработает обычный переход
+                window.location.href = tmaLink;
+            }
+        }
+    </script>
 </body>
 </html>
