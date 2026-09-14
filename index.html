@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Запуск TMA</title>
-    <!-- 1. Подключаем официальный скрипт Telegram -->
-    <script src="https://telegram.org"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Выберите тестовый стенд</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <h1>Это страница-заглушка. Включите корпоративный VPN и откройте TMA</h1>
     
     <!-- 2. Ссылку делаем кнопкой с вызовом функции -->
     <p>
-        <button onclick="openDevTma()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+        <button id="tmaDevBtn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
             Открыть TMA Dev
         </button>
     </p>
-
+    
     <script>
-        // Инициализируем Telegram Web App
-        const tg = window.Telegram.WebApp;
-        tg.ready(); // Сообщаем Telegram, что страница готова
-
-        function openDevTma() {
-            const tmaLink = "https://dev-zhiraff.wildberries.ru/";
-
-            if (tg.initData) {
-                // Если страница открыта внутри Telegram, используем внутренний метод открытия
-                tg.openTelegramLink(tmaLink);
-            } else {
-                // Если открыли просто в обычном браузере, сработает обычный переход
-                window.location.href = tmaLink;
-            }
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+          tg.ready();
+          tg.expand();
         }
+    
+        function openInSameWebView(standUrl) {
+          const target = new URL(standUrl);
+          // Telegram кладёт initData в hash стартовой страницы — его надо унести с собой.
+          target.hash = location.hash;
+          if (location.search && !target.search) {
+            target.search = location.search;
+          }
+          location.replace(target.href);
+        }
+    
+        document.getElementById('tmaDevBtn').onclick = function () {
+          openInSameWebView('https://dev-zhiraff.wildberries.ru/');
+        };
+
     </script>
 </body>
 </html>
