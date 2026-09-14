@@ -2,41 +2,478 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Выберите тестовый стенд</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Zhiraff TMA</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: var(--tg-theme-bg-color, #f4f4f5);
+      --text: var(--tg-theme-text-color, #1c1c1e);
+      --hint: var(--tg-theme-hint-color, #8e8e93);
+      --button: var(--tg-theme-button-color, #3390ec);
+      --button-text: var(--tg-theme-button-text-color, #ffffff);
+      --card: var(--tg-theme-secondary-bg-color, #ffffff);
+      --link: var(--tg-theme-link-color, #3390ec);
+      --stand-secondary: #ececee;
+      --error-bg: #fdecea;
+      --shadow: 0 8px 24px rgba(28, 28, 30, 0.08);
+      --safe-top: var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px));
+      --safe-bottom: var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+      --safe-left: var(--tg-safe-area-inset-left, env(safe-area-inset-left, 0px));
+      --safe-right: var(--tg-safe-area-inset-right, env(safe-area-inset-right, 0px));
+      --ok: #34c759;
+      --warn: #ff9f0a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: var(--tg-theme-bg-color, #0e0e10);
+        --text: var(--tg-theme-text-color, #f2f2f7);
+        --hint: var(--tg-theme-hint-color, #8e8e93);
+        --button: var(--tg-theme-button-color, #3390ec);
+        --button-text: var(--tg-theme-button-text-color, #ffffff);
+        --card: var(--tg-theme-secondary-bg-color, #1c1c1e);
+        --link: var(--tg-theme-link-color, #64b5f6);
+        --stand-secondary: #2c2c2e;
+        --error-bg: #3a1d1c;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    html[data-theme="light"] {
+      --bg: var(--tg-theme-bg-color, #f4f4f5);
+      --text: var(--tg-theme-text-color, #1c1c1e);
+      --hint: var(--tg-theme-hint-color, #8e8e93);
+      --button: var(--tg-theme-button-color, #3390ec);
+      --button-text: var(--tg-theme-button-text-color, #ffffff);
+      --card: var(--tg-theme-secondary-bg-color, #ffffff);
+      --link: var(--tg-theme-link-color, #3390ec);
+      --stand-secondary: #ececee;
+      --error-bg: #fdecea;
+      --shadow: 0 8px 24px rgba(28, 28, 30, 0.08);
+    }
+
+    html[data-theme="dark"] {
+      --bg: var(--tg-theme-bg-color, #0e0e10);
+      --text: var(--tg-theme-text-color, #f2f2f7);
+      --hint: var(--tg-theme-hint-color, #8e8e93);
+      --button: var(--tg-theme-button-color, #3390ec);
+      --button-text: var(--tg-theme-button-text-color, #ffffff);
+      --card: var(--tg-theme-secondary-bg-color, #1c1c1e);
+      --link: var(--tg-theme-link-color, #64b5f6);
+      --stand-secondary: #2c2c2e;
+      --error-bg: #3a1d1c;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      color-scheme: light dark;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding:
+        calc(24px + var(--safe-top))
+        calc(20px + var(--safe-right))
+        calc(24px + var(--safe-bottom))
+        calc(20px + var(--safe-left));
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: var(--card);
+      color: var(--button);
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .logo svg {
+      width: 44px;
+      height: 44px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .lead {
+      color: var(--hint);
+      font-size: 15px;
+      line-height: 1.45;
+      max-width: 34ch;
+    }
+
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--hint);
+      flex-shrink: 0;
+    }
+
+    .pill.is-ok .dot { background: var(--ok); }
+    .pill.is-warn .dot { background: var(--warn); }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stand {
+      appearance: none;
+      border: 0;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--button);
+      color: var(--button-text);
+      display: grid;
+      gap: 4px;
+      font: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .stand.secondary {
+      background: var(--stand-secondary);
+      color: var(--text);
+    }
+
+    .stand:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
+    .stand-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .stand-url {
+      font-size: 12px;
+      opacity: 0.78;
+      word-break: break-all;
+    }
+
+    .hint {
+      margin-top: 16px;
+      color: var(--hint);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .hint code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .error {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--error-bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .error.is-visible {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <h1>Это страница-заглушка. Включите корпоративный VPN и откройте TMA</h1>
-    
-    <!-- 2. Ссылку делаем кнопкой с вызовом функции -->
-    <p>
-        <button id="tmaDevBtn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
-            Открыть TMA Dev
-        </button>
-    </p>
-    
-    <script>
-        const tg = window.Telegram && window.Telegram.WebApp;
-        if (tg) {
-          tg.ready();
-          tg.expand();
-        }
-    
-        function openInSameWebView(standUrl) {
-          const target = new URL(standUrl);
-          // Telegram кладёт initData в hash стартовой страницы — его надо унести с собой.
-          target.hash = location.hash;
-          if (location.search && !target.search) {
-            target.search = location.search;
-          }
-          location.replace(target.href);
-        }
-    
-        document.getElementById('tmaDevBtn').onclick = function () {
-          openInSameWebView('https://dev-zhiraff.wildberries.ru/');
-        };
+  <main class="shell">
+    <header class="hero">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M64.8 62.65c-4.01-.43-7.65 1.46-9.08 5.13-1.92 4.96.93 11.28 6.34 14.13 1.4.73 2.83 1.17 4.22 1.32 4.01.43 7.65-1.46 9.07-5.13 1.92-4.96-.92-11.28-5.34-14.13-1.39-.73-2.83-1.16-4.21-1.32z" fill="currentColor"/>
+          <path d="M46.64 65.16c-.07-.24-.15-.48-.22-.69-1.19-3.08-3.33-1.12-4.78 4.38-1.35 5.12-1.64 11.51-.71 14.84.07.25.15.48.22.69 1.19 3.08 3.33 1.12 4.78-4.38 1.35-5.12 1.64-11.51.71-14.84z" fill="currentColor"/>
+          <path d="M22.96 58.2c-.9 1.33-1.25 2.5-.88 3.32.91 2.03 5.94 1.07 11.23-2.15 3.16-1.92 5.7-4.22 7.03-6.2.9-1.32 1.25-2.5.88-3.31-.91-2.03-5.94-1.07-11.23 2.15-3.16 1.92-5.7 4.22-7.03 6.2z" fill="currentColor"/>
+          <path d="M37.01 27.43c-3.29-.54-5.46.74-5.26 3.53.28 3.75 4.76 8.8 10.02 11.28 1.36.64 2.63 1.04 3.77 1.23 3.29.54 5.46-.74 5.26-3.53-.28-3.75-4.77-8.81-10.03-11.28-1.36-.64-2.63-1.05-3.76-1.23z" fill="currentColor"/>
+          <path d="M57.98 42.05c.13.3.25.59.4.85 2.11 3.88 5.91 3.03 8.48-1.92 2.4-4.6 2.88-11.12 1.24-15.13-.13-.3-.26-.58-.4-.85-2.11-3.88-5.9-3.03-8.48 1.92-2.4 4.6-2.89 11.12-1.24 15.13z" fill="currentColor"/>
+          <path d="M69.49 47.52c-1.86 1.25-3.39 2.85-4.25 4.61-2.17 4.4.53 8.22 6.02 8.53 3.28.19 6.82-.92 9.59-2.79 1.86-1.25 3.39-2.84 4.25-4.61 2.16-4.4-.53-8.21-6.02-8.53-3.28-.19-6.82.92-9.59 2.79z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1>Zhiraff TMA</h1>
+      <p class="lead">Откройте собранное приложение в том же WebView Telegram, с initData и нативной навигацией.</p>
+    </header>
 
-    </script>
+    <div class="status" id="status"></div>
+
+    <div class="card">
+      <button class="stand" type="button" data-stand="local">
+        <span class="stand-title">Local build</span>
+        <span class="stand-url" id="localUrl"></span>
+      </button>
+      <button class="stand secondary" type="button" data-stand="dev">
+        <span class="stand-title">Dev стенд</span>
+        <span class="stand-url" id="devUrl"></span>
+      </button>
+    </div>
+
+    <p class="hint">Local — это <code>tma-lab serve</code> на этой машине (Telegram Desktop). С телефона нужен HTTPS: Dev или туннель.</p>
+    <p class="error" id="error"></p>
+  </main>
+
+  <script>
+    const STANDS = {
+      local: { title: 'Local build', url: 'http://127.0.0.1:8080/' },
+      dev: { title: 'Dev стенд', url: 'https://dev-zhiraff.wildberries.ru/' },
+    };
+
+    const HASH_KEYS = [
+      'tgWebAppData',
+      'tgWebAppVersion',
+      'tgWebAppPlatform',
+      'tgWebAppThemeParams',
+      'tgWebAppDefaultColors',
+      'tgWebAppFullscreen',
+      'tgWebAppDebug',
+      'tgWebAppBotInline',
+      'tgWebAppShowSettings',
+    ];
+
+    const tg = window.Telegram && window.Telegram.WebApp;
+    const errorEl = document.getElementById('error');
+
+    document.getElementById('localUrl').textContent = STANDS.local.url;
+    document.getElementById('devUrl').textContent = STANDS.dev.url;
+
+    if (tg) {
+      try { tg.ready(); } catch (e) {}
+      try { tg.expand(); } catch (e) {}
+      try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {}
+      applyChrome(tg);
+      try { tg.onEvent('themeChanged', syncTheme); } catch (e) {}
+    }
+    try {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme);
+    } catch (e) {}
+    syncTheme();
+
+    renderStatus();
+
+    document.querySelectorAll('[data-stand]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        const stand = STANDS[button.getAttribute('data-stand')];
+        if (!stand) return;
+        openInSameWebView(stand.url, button);
+      });
+    });
+
+    function applyChrome(app) {
+      const color = 'bg_color';
+      try { if (app.setHeaderColor) app.setHeaderColor(color); } catch (e) {}
+      try { if (app.setBackgroundColor) app.setBackgroundColor(color); } catch (e) {}
+      try { if (app.setBottomBarColor) app.setBottomBarColor(color); } catch (e) {}
+    }
+
+    function syncTheme() {
+      const fromTg = tg && (tg.colorScheme === 'dark' || tg.colorScheme === 'light')
+        ? tg.colorScheme
+        : '';
+      const scheme = fromTg || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', scheme);
+      document.documentElement.style.colorScheme = scheme;
+      if (tg) applyChrome(tg);
+    }
+
+    function hasInitData() {
+      return !!(collectLaunchParams().tgWebAppData);
+    }
+
+    function isMiniApp() {
+      if (!tg) return false;
+      const platform = typeof tg.platform === 'string' ? tg.platform : '';
+      const native = typeof window.TelegramWebviewProxy !== 'undefined' ||
+        !!(window.external && typeof window.external.notify === 'function');
+      return (platform && platform !== 'unknown') || hasInitData() || native;
+    }
+
+    function renderStatus() {
+      const mini = isMiniApp();
+      const data = hasInitData();
+      const pills = [
+        { ok: mini, label: mini ? 'Внутри Mini App' : 'Обычный браузер' },
+        { ok: data, label: data ? 'initData есть' : 'initData нет' },
+      ];
+      document.getElementById('status').innerHTML = pills.map(function (pill) {
+        return '<span class="pill ' + (pill.ok ? 'is-ok' : 'is-warn') + '"><span class="dot"></span>' +
+          escapeHtml(pill.label) + '</span>';
+      }).join('');
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showError(message) {
+      errorEl.textContent = message;
+      errorEl.classList.add('is-visible');
+    }
+
+    function openInSameWebView(standUrl, button) {
+      errorEl.classList.remove('is-visible');
+      try {
+        const target = new URL(standUrl, location.href);
+        const hash = buildLaunchHash();
+        if (hash) target.hash = hash;
+        if (location.search && !target.search) target.search = location.search;
+        if (button) button.disabled = true;
+        location.replace(target.href);
+      } catch (e) {
+        if (button) button.disabled = false;
+        showError('Не удалось открыть стенд: ' + (e && e.message ? e.message : 'unknown'));
+      }
+    }
+
+    function buildLaunchHash() {
+      if (location.hash && /(?:^|[?#&])tgWebAppData=/.test(location.hash)) {
+        return location.hash.replace(/^#/, '');
+      }
+
+      const params = collectLaunchParams();
+      if (!params.tgWebAppData && !params.tgWebAppPlatform && !params.tgWebAppVersion) {
+        return '';
+      }
+
+      const query = new URLSearchParams();
+      HASH_KEYS.forEach(function (key) {
+        const value = params[key];
+        if (value == null || value === '') return;
+        query.set(key, String(value));
+      });
+      return query.toString();
+    }
+
+    function collectLaunchParams() {
+      const fromHash = parseHashParams(location.hash);
+      const stored = readStoredInitParams();
+      const fromApp = paramsFromWebApp();
+      return Object.assign({}, fromApp, stored, fromHash);
+    }
+
+    function parseHashParams(hash) {
+      const params = {};
+      const raw = String(hash || '').replace(/^#/, '');
+      if (!raw || raw.indexOf('=') < 0) return params;
+      const query = raw.indexOf('?') >= 0 ? raw.slice(raw.indexOf('?') + 1) : raw;
+      query.split('&').forEach(function (part) {
+        if (!part) return;
+        const eq = part.indexOf('=');
+        const key = decodeURIComponent((eq < 0 ? part : part.slice(0, eq)).replace(/\+/g, ' '));
+        if (!key || key === '_path') return;
+        const value = eq < 0 ? '' : decodeURIComponent(part.slice(eq + 1).replace(/\+/g, ' '));
+        params[key] = value;
+      });
+      return params;
+    }
+
+    function readStoredInitParams() {
+      const live = window.Telegram && window.Telegram.WebView && window.Telegram.WebView.initParams;
+      if (live && typeof live === 'object') return pickHashKeys(live);
+      try {
+        const raw = sessionStorage.getItem('__telegram__initParams');
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? pickHashKeys(parsed) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function pickHashKeys(source) {
+      const out = {};
+      HASH_KEYS.forEach(function (key) {
+        if (source[key] != null && source[key] !== '') out[key] = source[key];
+      });
+      return out;
+    }
+
+    function paramsFromWebApp() {
+      const params = {};
+      if (!tg) return params;
+      if (typeof tg.initData === 'string' && tg.initData) params.tgWebAppData = tg.initData;
+      if (typeof tg.version === 'string' && tg.version) params.tgWebAppVersion = tg.version;
+      if (typeof tg.platform === 'string' && tg.platform) params.tgWebAppPlatform = tg.platform;
+      if (tg.themeParams && Object.keys(tg.themeParams).length) {
+        params.tgWebAppThemeParams = JSON.stringify(tg.themeParams);
+      }
+      if (tg.isFullscreen) params.tgWebAppFullscreen = '1';
+      try {
+        const colors = sessionStorage.getItem('__telegram__defaultColors');
+        if (colors) {
+          const parsed = JSON.parse(colors);
+          if (parsed) params.tgWebAppDefaultColors = typeof parsed === 'string' ? parsed : JSON.stringify(parsed);
+        }
+      } catch (e) {}
+      return params;
+    }
+  </script>
 </body>
 </html>
